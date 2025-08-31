@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangkok Trip Planner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ffa726);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .poll-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .itinerary-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .category h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .option {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+        
+        .option input {
+            margin-right: 12px;
+            margin-top: 3px;
+            transform: scale(1.2);
+        }
+        
+        .option label {
+            flex: 1;
+            cursor: pointer;
+        }
+        
+        .option label small {
+            display: block;
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+        
+        .votes {
+            margin-left: auto;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .friend-input {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e8f2ff;
+            border-radius: 10px;
+        }
+        
+        .friend-input input {
+            width: 70%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .friend-input button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        
+        .friend-input button:hover {
+            background: #5a6fd8;
+        }
+        
+        .current-voter {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .itinerary {
+            background: #f0f8ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .day {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #ff6b6b;
+        }
+        
+        .day h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .time-slot {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: #f9f9f9;
+            border-radius: 6px;
+        }
+        
+        .time {
+            font-weight: bold;
+            color: #667eea;
+            width: 100px;
+            font-size: 0.9em;
+        }
+        
+        .activity {
+            flex: 1;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #667eea;
+            padding: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏯 Bangkok Adventure Planner</h1>
+            <p>Vote for your favorites and watch the itinerary update in real-time!</p>
+        </div>
+        
+        <div class="content">
+            <div class="poll-section">
+                <h2>🗳️ Cast Your Votes</h2>
+                
+                <div class="friend-input">
+                    <input type="text" id="friendName" placeholder="Enter your name" />
+                    <button onclick="setCurrentVoter()">Start Voting</button>
+                </div>
+                
+                <div class="current-voter" id="currentVoter">Please enter your name to start voting</div>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalVoters">0</div>
+                        <div class="stat-label">Voters</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalVotes">0</div>
+                        <div class="stat-label">Total Votes</div>
+                    </div>
+                </div>
+                
+                <div id="pollContainer">
+                    <div class="loading">Loading venues...</div>
+                </div>
+            </div>
+            
+            <div class="itinerary-section">
+                <h2>📅 Suggested Itinerary</h2>
+                <p style="margin-bottom: 20px; color: #666;">Based on current votes • Thu Night - Mon Afternoon</p>
+                
+                <div id="itineraryContainer">
+                    <div class="loading">Loading itinerary...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const venues = {
+            onsen: [
+                { name: 'Maxwell', description: 'Modern luxury onsen with premium amenities and city views', timePreference: 'afternoon', location: 'central', duration: 3 },
+                { name: 'Zen', description: 'Minimalist Japanese-style onsen focusing on tranquil meditation experience', timePreference: 'afternoon', location: 'central', duration: 2.5 },
+                { name: 'Kaikan', description: 'Traditional Japanese onsen with authentic hot spring culture', timePreference: 'afternoon', location: 'central', duration: 3 },
+                { name: 'Machiya', description: 'Boutique onsen in historic Japanese townhouse setting', timePreference: 'afternoon', location: 'sukhumvit', duration: 2.5 },
+                { name: 'Kino sento', description: 'Community-style Japanese public bathhouse with local vibe', timePreference: 'afternoon', location: 'central', duration: 2 },
+                { name: 'Ensen', description: 'Contemporary onsen with modern wellness treatments', timePreference: 'afternoon', location: 'central', duration: 2.5 },
+                { name: 'Ryuu', description: 'Dragon-themed onsen with dramatic interior design and hot springs', timePreference: 'afternoon', location: 'sukhumvit', duration: 3 },
+                { name: 'Panpuri', description: 'Thai luxury spa brand with organic treatments and Thai herbal therapies', timePreference: 'afternoon', location: 'central', duration: 3 },
+                { name: 'Yunomori', description: 'Popular onsen chain with multiple locations and affordable pricing', timePreference: 'afternoon', location: 'multiple', duration: 3 },
+                { name: 'Krubb', description: 'Authentic Japanese onsen experience with traditional bathing rituals', timePreference: 'afternoon', location: 'central', duration: 2.5 }
+            ],
+            shopping: [
+                { name: 'Emsphere', description: 'Futuristic spherical mall with high-end brands and unique architecture', timePreference: 'midday', location: 'sukhumvit', duration: 3 },
+                { name: 'One Bangkok', description: 'Massive mixed-use development with luxury shopping and dining', timePreference: 'midday', location: 'central', duration: 4 },
+                { name: 'Icon Siam', description: 'Riverside mega-mall with floating market and river views', timePreference: 'midday', location: 'riverside', duration: 4 }
+            ],
+            restaurants: [
+                { name: 'Lek Seafood', description: 'Famous local seafood institution known for fresh catches and authentic Thai flavors', timePreference: 'evening', location: 'central', duration: 2 },
+                { name: 'Kub Kao kub pla', description: 'Traditional Thai rice and fish restaurant with homestyle cooking and local atmosphere', timePreference: 'evening', location: 'local', duration: 1.5 }
+            ],
+            cafes: [
+                { name: 'Sarnies', description: 'Australian-style brunch spot famous for creative toast and specialty coffee', timePreference: 'morning', location: 'multiple', duration: 1.5 },
+                { name: 'Frans', description: 'Chic European-style cafe with pastries and sophisticated coffee culture', timePreference: 'morning', location: 'central', duration: 1.5 },
+                { name: 'LV cafe', description: 'Louis Vuitton flagship cafe combining luxury fashion with premium dining', timePreference: 'morning', location: 'central', duration: 2 },
+                { name: 'Brioche From Heaven', description: 'French bakery cafe specializing in authentic pastries and croissants', timePreference: 'morning', location: 'sukhumvit', duration: 1.5 },
+                { name: 'The Mustang Blu', description: 'Vintage American diner vibe with classic comfort food and milkshakes', timePreference: 'morning', location: 'central', duration: 1.5 },
+                { name: '% Arabic Empire Tower', description: 'Japanese specialty coffee with precise brewing methods and minimal design', timePreference: 'morning', location: 'central', duration: 1 },
+                { name: 'Rocket', description: 'Industrial-chic coffee roastery with locally roasted beans and latte art', timePreference: 'morning', location: 'sukhumvit', duration: 1.5 },
+                { name: 'Luka', description: 'Cozy neighborhood cafe with homemade cakes and intimate atmosphere', timePreference: 'morning', location: 'central', duration: 1.5 },
+                { name: 'Ksana Matcha (flagship)', description: 'Premium Japanese matcha specialist with ceremonial-grade tea and desserts', timePreference: 'morning', location: 'central', duration: 1 },
+                { name: 'Factory Cafe', description: 'Industrial warehouse-style cafe with third-wave coffee and creative workspace', timePreference: 'morning', location: 'sukhumvit', duration: 1.5 },
+                { name: 'Roast', description: 'Local coffee roastery chain known for consistent quality and multiple locations', timePreference: 'morning', location: 'multiple', duration: 1.5 },
+                { name: 'After You', description: 'Thai dessert empire famous for honey toast and Instagram-worthy sweets', timePreference: 'afternoon', location: 'multiple', duration: 1.5 }
+            ],
+            clubs: [
+                { name: 'EDT', description: 'Upscale electronic dance music venue with international DJs and rooftop views', timePreference: 'night', location: 'central', duration: 4 },
+                { name: 'Rush', description: 'High-energy club with multiple floors and diverse music genres', timePreference: 'night', location: 'sukhumvit', duration: 4 },
+                { name: 'Beef', description: 'Trendy underground club known for hip-hop and urban music scene', timePreference: 'night', location: 'central', duration: 4 },
+                { name: 'God', description: 'Exclusive VIP club with premium bottle service and celebrity spotting', timePreference: 'night', location: 'central', duration: 4 },
+                { name: 'DJ', description: 'Intimate venue focusing on house music and local DJ talent', timePreference: 'night', location: 'sukhumvit', duration: 3 }
+            ],
+            massages: [
+                { name: 'Klover', description: 'Modern Thai massage studio with contemporary techniques and skilled therapists', timePreference: 'afternoon', location: 'central', duration: 2 },
+                { name: 'Prestige', description: 'Luxury massage parlor offering traditional Thai healing and premium spa treatments', timePreference: 'afternoon', location: 'sukhumvit', duration: 2.5 }
+            ]
+        };
+
+        let currentVoter = '';
+        let allVotes = {};
+        let allVoters = [];
+
+        // API functions
+        async function loadVotes() {
+            try {
+                const response = await fetch('/api/votes');
+                allVotes = await response.json();
+                updateVoteDisplays();
+                updateStats();
+                generateItinerary();
+            } catch (error) {
+                console.error('Error loading votes:', error);
+            }
+        }
+
+        async function loadVoters() {
+            try {
+                const response = await fetch('/api/voters');
+                allVoters = await response.json();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading voters:', error);
+            }
+        }
+
+        async function submitVote(venueName, category, isVoting) {
+            try {
+                const response = await fetch('/api/vote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        voterName: currentVoter,
+                        venueName: venueName,
+                        category: category,
+                        isVoting: isVoting
+                    })
+                });
+                
+                if (response.ok) {
+                    await loadVotes();
+                    await loadVoters();
+                }
+            } catch (error) {
+                console.error('Error submitting vote:', error);
+            }
+        }
+
+        function initializePoll() {
+            const container = document.getElementById('pollContainer');
+            container.innerHTML = '';
+            
+            Object.keys(venues).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                categoryDiv.innerHTML = `
+                    <h3>${category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+                    ${venues[category].map((venue, index) => `
+                        <div class="option">
+                            <input type="checkbox" id="${category}_${index}" 
+                                   onchange="handleVote('${category}', '${venue.name}', this.checked)">
+                            <label for="${category}_${index}">
+                                <strong>${venue.name}</strong><br>
+                                <small style="color: #666; font-style: italic;">${venue.description}</small>
+                            </label>
+                            <span class="votes" id="votes_${category}_${venue.name}">0</span>
+                        </div>
+                    `).join('')}
+                `;
+                container.appendChild(categoryDiv);
+            });
+        }
+
+        function setCurrentVoter() {
+            const name = document.getElementById('friendName').value.trim();
+            if (name) {
+                currentVoter = name;
+                document.getElementById('currentVoter').textContent = `Voting as: ${name}`;
+                loadUserVotes(name);
+            }
+        }
+
+        function loadUserVotes(voterName) {
+            // Clear all checkboxes first
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            
+            // Check boxes for venues this voter has voted for
+            Object.keys(allVotes).forEach(venueName => {
+                if (allVotes[venueName].voters.includes(voterName)) {
+                    const category = allVotes[venueName].category;
+                    const venueIndex = venues[category].findIndex(v => v.name === venueName);
+                    const checkbox = document.getElementById(`${category}_${venueIndex}`);
+                    if (checkbox) checkbox.checked = true;
+                }
+            });
+        }
+
+        function handleVote(category, venueName, isChecked) {
+            if (!currentVoter) {
+                alert('Please enter your name first!');
+                return;
+            }
+            
+            submitVote(venueName, category, isChecked);
+        }
+
+        function updateVoteDisplays() {
+            Object.keys(venues).forEach(category => {
+                venues[category].forEach(venue => {
+                    const voteElement = document.getElementById(`votes_${category}_${venue.name}`);
+                    if (voteElement) {
+                        const voteCount = allVotes[venue.name] ? allVotes[venue.name].count : 0;
+                        voteElement.textContent = voteCount;
+                    }
+                });
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('totalVoters').textContent = allVoters.length;
+            const totalVotes = Object.values(allVotes).reduce((sum, vote) => sum + vote.count, 0);
+            document.getElementById('totalVotes').textContent = totalVotes;
+        }
+
+        function getTopVenues(category, limit = 3) {
+            return venues[category]
+                .map(venue => ({ 
+                    ...venue, 
+                    votes: allVotes[venue.name] ? allVotes[venue.name].count : 0 
+                }))
+                .sort((a, b) => b.votes - a.votes)
+                .slice(0, limit)
+                .filter(venue => venue.votes > 0);
+        }
+
+        function generateItinerary() {
+            const container = document.getElementById('itineraryContainer');
+            const warnings = [];
+            
+            // Get top venues by category
+            const topOnsen = getTopVenues('onsen', 2);
+            const topShopping = getTopVenues('shopping', 2);
+            const topCafes = getTopVenues('cafes', 4);
+            const topClubs = getTopVenues('clubs', 3);
+            const topMassages = getTopVenues('massages', 1);
+            const topRestaurants = getTopVenues('restaurants', 2);
+
+            const itinerary = [
+                {
+                    day: 'Thursday Night',
+                    date: 'Arrival',
+                    activities: [
+                        { time: '8:00 PM', activity: 'Arrive & Check-in' },
+                        { time: '9:30 PM', activity: topRestaurants[0] ? `Dinner at ${topRestaurants[0].name}` : 'Light dinner' },
+                        { time: '11:00 PM', activity: 'Early rest (jet lag recovery)' }
+                    ]
+                },
+                {
+                    day: 'Friday',
+                    date: 'Full Day',
+                    activities: [
+                        { time: '9:00 AM', activity: topCafes[0] ? `Breakfast at ${topCafes[0].name}` : 'Breakfast at cafe' },
+                        { time: '11:00 AM', activity: topShopping[0] ? `Shopping at ${topShopping[0].name}` : 'Shopping' },
+                        { time: '3:00 PM', activity: topOnsen[0] ? `Relax at ${topOnsen[0].name}` : 'Onsen/Spa time' },
+                        { time: '6:30 PM', activity: topRestaurants[1] ? `Dinner at ${topRestaurants[1].name}` : 'Dinner break' },
+                        { time: '10:00 PM', activity: topClubs[0] ? `Night out at ${topClubs[0].name}` : 'Clubbing' }
+                    ]
+                },
+                {
+                    day: 'Saturday', 
+                    date: 'Full Day',
+                    activities: [
+                        { time: '10:00 AM', activity: topCafes[1] ? `Brunch at ${topCafes[1].name}` : 'Brunch' },
+                        { time: '12:00 PM', activity: topShopping[1] ? `Explore ${topShopping[1].name}` : 'More shopping' },
+                        { time: '4:00 PM', activity: topOnsen[1] ? `Unwind at ${topOnsen[1].name}` : 'Second onsen experience' },
+                        { time: '7:00 PM', activity: topRestaurants[0] && topRestaurants.length > 1 ? `Dinner at ${topRestaurants[0].name}` : 'Dinner & drinks' },
+                        { time: '10:30 PM', activity: topClubs[1] ? `Party at ${topClubs[1].name}` : 'Different club scene' }
+                    ]
+                },
+                {
+                    day: 'Sunday',
+                    date: 'Full Day', 
+                    activities: [
+                        { time: '10:30 AM', activity: topCafes[2] ? `Coffee at ${topCafes[2].name}` : 'Coffee & recovery' },
+                        { time: '12:30 PM', activity: 'Lunch & local exploration' },
+                        { time: '3:00 PM', activity: topMassages[0] ? `Massage at ${topMassages[0].name}` : 'Traditional Thai massage' },
+                        { time: '6:00 PM', activity: topRestaurants[1] && topRestaurants.length > 1 ? `Farewell dinner at ${topRestaurants[1].name}` : 'Farewell dinner' },
+                        { time: '9:00 PM', activity: topClubs[2] ? `Final night at ${topClubs[2].name}` : 'Final night out' }
+                    ]
+                },
+                {
+                    day: 'Monday',
+                    date: 'Departure',
+                    activities: [
+                        { time: '10:00 AM', activity: topCafes[3] ? `Final coffee at ${topCafes[3].name}` : 'Final coffee' },
+                        { time: '12:00 PM', activity: 'Last-minute shopping' },
+                        { time: '2:00 PM', activity: 'Airport departure prep' }
+                    ]
+                }
+            ];
+
+            // Check for potential issues
+            if (topClubs.length > 2) {
+                warnings.push('⚠️ You have 3+ popular clubs - consider that Bangkok clubs can be quite intense and you might want to pace yourselves!');
+            }
+            
+            if (topOnsen.length > 1 && topMassages.length > 0) {
+                warnings.push('⚠️ Multiple spa/onsen + massage sessions might be relaxing overload - consider mixing with more active experiences.');
+            }
+            
+            if (topShopping.length > 1) {
+                warnings.push('💡 Multiple shopping venues selected - Icon Siam and Emsphere are quite large and could take full days each.');
+            }
+
+            if (topRestaurants.length > 1) {
+                warnings.push('🍽️ Great restaurant choices! Both are scheduled across different evenings for variety.');
+            }
+
+            // Check location clustering
+            const locations = [...topOnsen, ...topShopping, ...topCafes, ...topRestaurants].map(v => v.location);
+            const locationCounts = locations.reduce((acc, loc) => {
+                acc[loc] = (acc[loc] || 0) + 1;
+                return acc;
+            }, {});
