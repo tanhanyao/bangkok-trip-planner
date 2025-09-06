@@ -568,3 +568,50 @@
                 acc[loc] = (acc[loc] || 0) + 1;
                 return acc;
             }, {});
+
+            if (Object.keys(locationCounts).length > 3) {
+                warnings.push('🚇 Your selections are spread across many areas - consider grouping by BTS lines for easier travel.');
+            }
+
+            // Render itinerary
+            let html = itinerary.map(day => `
+                <div class="day">
+                    <h4>${day.day} - ${day.date}</h4>
+                    ${day.activities.map(slot => `
+                        <div class="time-slot">
+                            <span class="time">${slot.time}</span>
+                            <span class="activity">${slot.activity}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+
+            if (warnings.length > 0) {
+                html += '<div class="warning">' + warnings.join('<br>') + '</div>';
+            }
+
+            if (allVoters.length === 0) {
+                html = '<div class="warning">👥 No votes yet! Get your friends to vote and watch this itinerary come to life.</div>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Initialize the app
+        window.addEventListener('load', function() {
+            console.log('App initializing...');
+            initializePoll();
+            loadVotes();
+            loadVoters();
+            console.log('App initialized');
+            
+            // Poll for updates every 10 seconds for real-time experience
+            setInterval(() => {
+                if (!currentVoter) return; // Only poll if someone is actively voting
+                loadVotes();
+                loadVoters();
+            }, 10000);
+        });
+    </script>
+</body>
+</html>
