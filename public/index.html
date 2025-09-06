@@ -384,8 +384,9 @@
                 });
                 
                 if (response.ok) {
-                    await loadVotes();
-                    await loadVoters();
+                    // Load data and then regenerate itinerary
+                    await Promise.all([loadVotes(), loadVoters()]);
+                    generateItinerary();
                 }
             } catch (error) {
                 console.error('Error submitting vote:', error);
